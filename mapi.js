@@ -27,7 +27,9 @@ var mapiHandlers = {
     active = _.filter(myTabs, function(tab){
       return tab.active;
     });
+    myActive.set(myAuth.sub, active[0]);
     //updateComments(active[0].url);
+    
   },
   history:function(message){
     console.log('copilot_webpage: history');

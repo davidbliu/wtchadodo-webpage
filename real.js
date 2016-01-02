@@ -7,7 +7,8 @@ var myAuth;
 var tabMap;
 var bookmarks;
 var myHistory;
-
+var myComments;
+var myActive;
 
 function translateTime(timestamp){
   var a= new Date(timestamp);
@@ -169,23 +170,20 @@ app.controller('CopilotCtrl', function($scope){
     myComments = myDoc.getModel().getRoot().get('main-comments');
     $scope.comments = myComments;
     myComments.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, function(event){
-      //console.log('webpage: comments changed');
-      //console.log(event);
       updateComments(event.property);
+    });
+    // active
+    myActive = myDoc.getModel().getRoot().get('main-active');
+    myActive.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, function(event){
+      console.log('myActive changed');
+      console.log(event);
+      updateActive();
     });
     mapiListener(); // see the mapi.js file
     handleCollaborators();
     testMessage();
   }
 
-  function updateComments(url){
-    changeMessage = {
-      name:'updateComments',
-      comments:myComments.get(url),
-      url:url
-    }
-    window.postMessage(changeMessage, '*');
-  }
   
   function updateCollaborators(){
     $scope.collaborators = myDoc.getCollaborators();
@@ -225,6 +223,12 @@ app.controller('CopilotCtrl', function($scope){
       }
     });
     $scope.userIds = _.keys($scope.tabDict);
+    //remove signed out users from active
+    _.each(myActive.keys(), function(key){
+      if(!_.contains($scope.userIds, key)){
+        myActive.delete(key);
+      }
+    });
     $scope.$digest();
     activateTabHover();
   }

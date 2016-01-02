@@ -23,6 +23,7 @@
 
     <!--angular-->
     <script src = 'realApp.js'></script>
+    <script src = 'updates.js'></script>
     <script src = 'real.js'></script>
     <script src = 'mapi.js'></script>
   </head>
@@ -108,19 +109,23 @@
           </li>
         </ul>
       </div><!-- end of bookmarks div -->
-      <div id = 'comments-div'>
-        <h2>Comments</h2>
-        <div ng-repeat = 'key in comments.keys()'>
-          <h4>{{key}}</h4>
-          <ul class = 'list-group'>
-            <li class = 'list-group-item' ng-repeat = 'comment in comments.get(key) track by $index'>
-              {{comment.content}} 
-            </li>
-          </ul>
+
+      <!--<div id = 'comments-div'>-->
+        <!--<h2>Comments</h2>-->
+        <!--<div ng-repeat = 'key in comments.keys()'>-->
+          <!--<h4>{{key}}</h4>-->
+          <!--<ul class = 'list-group'>-->
+            <!--<li class = 'list-group-item' ng-repeat = 'comment in comments.get(key) track by $index'>-->
+              <!--{{comment.content}} -->
+            <!--</li>-->
+          <!--</ul>-->
             
-        </div>
-      </div>
-    </div>
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+
+
+
     </div><!-- end of row -->
 
     <div  class = 'row' id = 'tools-row'>
