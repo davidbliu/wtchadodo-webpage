@@ -170,13 +170,12 @@ app.controller('CopilotCtrl', function($scope){
     myComments = myDoc.getModel().getRoot().get('main-comments');
     $scope.comments = myComments;
     myComments.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, function(event){
-      updateComments(event.property);
+      console.log('real: updating comments');
     });
     // active
     myActive = myDoc.getModel().getRoot().get('main-active');
     myActive.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, function(event){
-      console.log('myActive changed');
-      console.log(event);
+      console.log('real: updating active');
       updateActive();
     });
     mapiListener(); // see the mapi.js file
