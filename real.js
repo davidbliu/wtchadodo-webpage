@@ -1,4 +1,5 @@
 var docId = '0BwLZUlGsG71ONks1NUhWaV9abUE'
+//var docId = '0BwLZUlGsG71OLWRaTkxNUWNxazQ' //test doc id
 var clientId = '158145275272-lj3m0j741dj9fp50rticq48vtrfu59jj.apps.googleusercontent.com';
 // Create a new instance of the realtime utility with your client ID.
 var realtimeUtils = new utils.RealtimeUtils({ clientId: clientId });
