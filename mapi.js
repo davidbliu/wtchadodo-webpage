@@ -68,3 +68,14 @@ var mapiHandlers = {
     }
   }
 }
+
+//send connect message to background
+var connectMsg = {
+  api:'mapi',
+  sender:'copilot_webpage',
+  recipient:'background',
+  type:'connectCopilot'
+}
+setTimeout(function(){
+  window.postMessage(connectMsg, '*');
+}, 5000);

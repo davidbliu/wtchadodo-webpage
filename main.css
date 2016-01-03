@@ -58,6 +58,9 @@ a{
   /*background-color:#4285f4;*/
   color:white;
 }
+.jumbotron-red{
+  background-color:#E400FF;
+}
 .jumbotron-gray{
   background-color:rgba(200,200,200,0.1);
   margin-right:25%;

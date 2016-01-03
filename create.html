@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>COPILOT_CREATE</title>
+
+
+    <!-- Load Styles -->
+    <link rel = 'stylesheet' href = './bower_components/bootstrap/dist/css/bootstrap.min.css'>
+    <link rel = 'stylesheet' href = './main.css'>
+      
+    <script src = './lib/angular.min.js'></script>
+
+    <!-- Load the Realtime JavaScript library -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src = './lib/jquery.min.js'></script>
+    <script src = './bootstrap.min.js'></script>
+    <script src = './lib/underscore-min.js'></script>
+
+    <!-- Load the utility library -->
+    <script src="./lib/realtime-client-utils.js"></script>
+    <script src = './lib/parse-latest.min.js'></script>
+    <script src = './parse.js'></script>
+    <script src = './create.js'></script>
+
+    <!--angular-->
+  </head>
+  <body>
+    <div class = 'jumbotron jumbotron-red'>
+      <h3><img src = './images/mushroom.png' height = 50> Wtcha Dodo: Create a new #channel</h3>
+    </div>
+
+    <div id = 'create-form' style = 'width:50%;margin-left:25%;'>
+      <input class = 'form-control' placeholder = 'Channel Name (single word)'>
+      <br/>
+      <input class = 'form-control' placeholder = 'Channel Description'/>
+      <br/>
+      <input class = 'form-control' placeholder = 'Collaborator Emails (comma-separated)'>
+      <br/>
+      <div class = 'btn btn-default'>Create Channel</div>
+    </div>
+    
+  </body>
+</html>
