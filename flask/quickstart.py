@@ -54,7 +54,7 @@ def create_doc(title):
           'mimeType': 'application/vnd.google-apps.drive-sdk',
       }
     doc = service.files().insert(body = body).execute()
-    doc_id = s['selfLink'].split('/')[-1]
+    doc_id = doc['selfLink'].split('/')[-1]
     return doc_id
 
 def add_permissions(doc_id, emails):
