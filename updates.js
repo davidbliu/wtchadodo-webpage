@@ -1,14 +1,16 @@
 
-function updateActive(){
-  console.log('updating active');
+function updateActive(prevActive){
   var active = {};
-  _.each(myActive.keys(), function(key){
-    active[key] = myActive.get(key);
-  });
   collaborators = myDoc.getCollaborators();
   userDict = _.object(_.map(collaborators, function(item){
     return [item.userId, item];
   }));
+  _.each(_.keys(userDict), function(key){
+    activeTab = _.filter(tabMap.get(key), function(tab){
+      return tab.active;
+    })[0];
+    active[key] = activeTab;
+  });
   msg = {
     api:'mapi',
     type:'activeChanged',
@@ -17,9 +19,32 @@ function updateActive(){
     active: active,
     userDict:userDict
   };
-  console.log('sending along message');
-  console.log(msg);
-  window.postMessage(msg, '*');
+  if(collaborators != null && active != null){
+    var send = false;
+    activeKeys = _.keys(active);
+    prevKeys = _.keys(prevActive);
+    _.each(activeKeys, function(key){
+      if(!_.contains(prevKeys, key)){
+        send = true;
+      }
+      else{
+        if(prevActive[key] == null || prevActive[key].url != active[key].url){
+          send = true;
+        }
+      }
+    });
+    if(send){
+      _.each(prevKeys, function(key){
+        if(!_.contains(activeKeys, key)){
+          send = true;
+        }
+      });
+      if(send){
+        window.postMessage(msg, '*');
+      }
+    }
+  }
+  return active;
 }
 
 function updateComments(url){

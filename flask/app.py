@@ -40,7 +40,13 @@ def remove_permissions():
 
 @app.route("/create_channel")
 def create_channel():
-    return 'create_channel'
+    name = request.args.get('name')
+    description = request.args.get('description')
+    collaborators = request.args.get('collaborators');
+    emails = [x.strip() for x in  collaborators.split(',')]
+    doc_id  = gdriver.create_doc('dodo_'+ name)
+    gdriver.add_permissions(doc_id, emails)
+    return get_response({'id': doc_id});
 
 @app.route("/edit_channel")
 def edit_channel():

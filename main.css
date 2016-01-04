@@ -6,6 +6,9 @@ body{
 a{
   color:#009bff !important;
 }
+#history-div{
+  margin-left:20px;
+}
 .glyphicon:hover{
   opacity:0.5;
   cursor:pointer;

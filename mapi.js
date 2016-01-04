@@ -1,5 +1,6 @@
+var ACK = false;
+
 function mapiListener(){
-  console.log('copilot_webpage: started mapi listener');
   window.addEventListener('message', function(event){
   if(event.data && event.data.api && event.data.api == 'mapi'){
     message = event.data;
@@ -20,14 +21,15 @@ var mapiHandlers = {
     console.log(message);
   },
   tabChange:function(message){
+    ACK = true;
     console.log('copilot_webpage: tabchange');
     var myTabs = message.tabs;
     tabMap.set(myAuth.sub, myTabs);
     //send comments to the activeTab
-    active = _.filter(myTabs, function(tab){
+    activeTab = _.filter(myTabs, function(tab){
       return tab.active;
-    });
-    myActive.set(myAuth.sub, active[0]);
+    })[0];
+    //myActive.set(myAuth.sub, active[0]);
     //updateComments(active[0].url);
     
   },
@@ -76,6 +78,17 @@ var connectMsg = {
   recipient:'background',
   type:'connectCopilot'
 }
-setTimeout(function(){
-  window.postMessage(connectMsg, '*');
-}, 5000);
+function sendConnectMsg(){
+  if(tabMap == null){
+    setTimeout(function(){
+      sendConnectMsg();
+    }, 1000);
+    return;
+  }
+  if(!ACK){
+    setTimeout(function(){
+      window.postMessage(connectMsg, '*');
+    }, 1000);
+  }
+}
+sendConnectMsg();

@@ -20,24 +20,31 @@
     <script src="./lib/realtime-client-utils.js"></script>
     <script src = './lib/parse-latest.min.js'></script>
     <script src = './parse.js'></script>
+    <script src = './realApp.js'></script>
     <script src = './create.js'></script>
 
     <!--angular-->
   </head>
-  <body>
+  <body ng-app = 'copilotApp'>
+  <div ng-controller = 'CreateCtrl'>
     <div class = 'jumbotron jumbotron-red'>
       <h3><img src = './images/mushroom.png' height = 50> Wtcha Dodo: Create a new #channel</h3>
     </div>
 
     <div id = 'create-form' style = 'width:50%;margin-left:25%;'>
-      <input class = 'form-control' placeholder = 'Channel Name (single word)'>
+      <input ng-model = 'channelName' class = 'form-control' placeholder = 'Channel Name (single word)'>
       <br/>
-      <input class = 'form-control' placeholder = 'Channel Description'/>
+      <input ng-model = 'channelDescription' class = 'form-control' placeholder = 'Channel Description'/>
       <br/>
-      <input class = 'form-control' placeholder = 'Collaborator Emails (comma-separated)'>
+      <input ng-model = 'collaborators' class = 'form-control' placeholder = 'Collaborator Emails (comma-separated)'>
       <br/>
-      <div class = 'btn btn-default'>Create Channel</div>
+      <div class = 'btn btn-default' ng-click = 'createChannel()'>Create Channel</div>
+    </div>
+
+    <div style = 'text-align:center;width:100%'>
+      <h2>{{statusMsg}}</h2>
     </div>
     
+  </div>
   </body>
 </html>

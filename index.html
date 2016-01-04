@@ -28,21 +28,31 @@
     <script src = 'mapi.js'></script>
   </head>
   <body ng-app = 'copilotApp'>
-    <div class = 'jumbotron'>
-      <h3><img src = './images/mushroom.png' height = 50> Wtcha Dodo: Browse Together</h3>
-    </div>
     
     <div id = 'copilot' ng-controller = 'CopilotCtrl'>
-      <div class = 'jumbotron jumbotron-gray' ng-show = 'userIds != null'>
+      <div class = 'jumbotron'>
+        <h3><img src = './images/mushroom.png' height = 50> Wtcha Dodo: Browse Together</h3>
+        <h3>#{{channelName}} channel</h3>
+        <!--<div>{{channelDescription}}</div>-->
+        <!--<div><a href = '#' style = 'color:white !important;'>Switch Channels</a></div>-->
+      </div>
+      <div ng-show = 'userIds != null'>
         <div id = 'collaborators-div'> 
           <div style = 'text-align:left;width:100%;'>
-            <h4>Collaborators</h4>
-            <div ng-repeat = 'collaborator in collaborators track by $index'>
-              <img src = 'http://{{collaborator.photoUrl}}' class = 'collaborator-img'>
-              <a class = 'collaborator-link' href = 'javascript:void(0)'  id = '{{collaborator.userId}}-link'>
-                <span>&nbsp;{{collaborator.displayName}}</span>
-              </a>
-            </div>
+            <ul class = 'list-group' id = 'collaborator-list'>
+              <li class = 'list-group-item'  ng-repeat = 'collaborator in collaborators track by $index'>
+                <img src = 'http://{{collaborator.photoUrl}}' class = 'collaborator-img'>
+                <a class = 'collaborator-link' href = 'javascript:void(0)'  id = '{{collaborator.userId}}-link'>
+                  <span>&nbsp;{{collaborator.displayName}}</span>
+                </a> : 
+                <span ng-show = 'myActive[collaborator.userId] != null'>
+                  <img src = '{{myActive[collaborator.userId].favIconUrl}}' class = 'favicon-img'>
+                  <a href = '{{myActive[collaborator.userId].url}}' target = '_blank'>
+                    {{myActive[collaborator.userId].title}}
+                  </a>
+                </span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -58,7 +68,7 @@
               <ul class = 'list-group'>
                 <li ng-repeat = 'tab in tabLog track by $index' class = 'list-group-item'>
                   <img src = '{{tab.faviconUrl}}' class = 'favicon-img'> 
-                <a href = '{{tab.url}}' target = '_blank'>&nbsp;{{tab.title}}</a>
+                  <a data-tabid = '{{tab.id}}' class = 'dodo-link' data-url = '{{tab.url}}' href = 'javascript:void(0)'>&nbsp;{{tab.title}}</a>
                 <div class = 'pull-right label label-primary'>{{translateTime(tab.time)}}</div>
               </li>
             </ul>
@@ -85,8 +95,11 @@
           <ul class = 'tablist list-group'>
             <li class = 'tab-li list-group-item {{activeClass(tab)}}' ng-repeat = 'tab in tabDict[key] track by $index'>
             <img src = '{{tab.favIconUrl}}' class = 'favicon-img'> 
-            <a  href = '{{tab.url}}' target = '_blank'>{{tab.title}}</a>
+            <a data-tabid = '{{tab.id}}' href = 'javascript:void(0)' class = 'dodo-link' data-url = '{{tab.url}}'>
+              {{tab.title}}
+            </a>
             <div class = 'pull-right tab-icons'>
+              <i ng-show = 'key == myAuth.sub' class = 'glyphicon glyphicon-remove' ng-click = 'removeTab(tab)'></i>
               <i class = 'glyphicon glyphicon-bookmark' ng-click = 'bookmarkTab(tab)'></i>
               <i class = 'glyphicon glyphicon-time' ng-click = 'checkHistory(key, tab)'></i>
             </div>
@@ -102,30 +115,13 @@
         <ul class = 'tablist list-group'>
           <li class = 'tab-li list-group-item' ng-repeat = 'tab in bookmarks track by $index'>
             <img src = '{{tab.favIconUrl || tab.faviconUrl}}' class = 'favicon-img'>
-            <a href = '{{tab.url}}' target = '_blank'>&nbsp;{{tab.title}}</a>
+            <a data-tabid = '{{tab.id}}' href = 'javascript:void(0)' class = 'dodo-link' data-url = '{{tab.url}}'>&nbsp;{{tab.title}}</a>
             <div class = 'pull-right tab-icons'>
               <i class = 'glyphicon glyphicon-remove' ng-click = 'removeBookmark(tab)'></i>
             </div>
           </li>
         </ul>
       </div><!-- end of bookmarks div -->
-
-      <!--<div id = 'comments-div'>-->
-        <!--<h2>Comments</h2>-->
-        <!--<div ng-repeat = 'key in comments.keys()'>-->
-          <!--<h4>{{key}}</h4>-->
-          <!--<ul class = 'list-group'>-->
-            <!--<li class = 'list-group-item' ng-repeat = 'comment in comments.get(key) track by $index'>-->
-              <!--{{comment.content}} -->
-            <!--</li>-->
-          <!--</ul>-->
-            
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-
-
-
     </div><!-- end of row -->
 
     <div  class = 'row' id = 'tools-row'>
@@ -147,7 +143,7 @@
               <input type = 'checkbox' value = '' class = 'history-checkbox' id = '{{entry.tabId}}-{{entry.time}}'>
               <span class = 'text-muted'>{{translateTime(entry.time)}}</span>
               <img src = '{{entry.faviconUrl}}' class = 'favicon-img'>
-              <a href = '{{entry.url}}' target = '_blank'>&nbsp;{{entry.title}}</a>
+              <a href = 'javascript:void(0)' class= 'dodo-link' data-url = '{{entry.url}}' data-tabid = '{{entry.tabId}}'>&nbsp;{{entry.title}}</a>
             <div class = 'pull-right tab-icons'>
               <i class = 'glyphicon glyphicon-bookmark' ng-click = 'bookmarkTab(entry)'></i>
             </div>

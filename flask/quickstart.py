@@ -10,7 +10,7 @@ from oauth2client import tools
 # SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly'
 SCOPES = 'https://www.googleapis.com/auth/drive'
 CLIENT_SECRET_FILE = 'client_secret.json'
-APPLICATION_NAME = 'Drive API Python Quickstart'
+APPLICATION_NAME = 'WtchaDodo Drive Manager'
 
 try:
     import argparse
@@ -58,12 +58,20 @@ def create_doc(title):
     return doc_id
 
 def add_permissions(doc_id, emails):
-    print 'add_permissoins'
+    for email in emails:
+        body = {
+                'role':'writer',
+                'value':email,
+                'type':'user'
+                }
+        service.permissions().insert(fileId = doc_id, body = body).execute()
 
 service = get_service()
 
 
 if __name__ == '__main__':
-    doc_id= '0BwLZUlGsG71ONks1NUhWaV9abUE'
+    # doc_id= '0BwLZUlGsG71ONks1NUhWaV9abUE'
+    doc_id = '0BwLZUlGsG71OaUxnMTZ2SVZRZVU' #random testdoc
     # print get_permissions(doc_id)
-    create_doc('test_doc')
+    # print create_doc('test_doc')
+    add_permissions(doc_id, ['berkeleypbl.webdev@gmail.com'])

@@ -1,5 +1,5 @@
-var docId = '0BwLZUlGsG71ONks1NUhWaV9abUE'
-//var docId = '0BwLZUlGsG71OLWRaTkxNUWNxazQ' //test doc id
+var docId = '0BwLZUlGsG71ONks1NUhWaV9abUE' //main doc id
+//var docId = '0BwLZUlGsG71OczlTczg2amZQbWc' //test doc id
 var clientId = '158145275272-lj3m0j741dj9fp50rticq48vtrfu59jj.apps.googleusercontent.com';
 // Create a new instance of the realtime utility with your client ID.
 var realtimeUtils = new utils.RealtimeUtils({ clientId: clientId });
@@ -35,6 +35,8 @@ function scrollTabs(id){
 }
 
 app.controller('CopilotCtrl', function($scope){
+  $scope.channelName = 'main';
+  $scope.channelDescription= 'Share Wtcha Dodo with your friends';
   $scope.msg = 'hi there';
   $scope.tabDict = {};
   $scope.collaborators = [];
@@ -53,6 +55,21 @@ app.controller('CopilotCtrl', function($scope){
     $scope.modalTitle = 'Tab History';
     $("#myModal").modal();
   }
+
+  $scope.removeTab = function(tab){
+    msg = {
+      api:'mapi',
+      sender: 'copilot_webpage',
+      recipient:'background',
+      type:'removeTab',
+      tab: tab
+    }
+    window.postMessage(msg, '*');
+  }
+
+  $scope.redirectTab = function(tab){
+    //redirect instead of opening new tab
+  };
 
   $scope.bookmarkTab = function(tab){
     seen = false;
@@ -128,6 +145,7 @@ app.controller('CopilotCtrl', function($scope){
         url: id_url,
         success:function(data){
           myAuth = data;
+          $scope.myAuth = myAuth;
         }
       });
 
@@ -142,7 +160,13 @@ app.controller('CopilotCtrl', function($scope){
   }
 
   function start() {
-    realtimeUtils.load(docId.replace('/', ''), onFileLoaded, onFileInitialize);
+    var id = realtimeUtils.getParam('id');
+    if(id){
+      realtimeUtils.load(id.replace('/', ''), onFileLoaded, onFileInitialize);
+    }
+    else{
+      realtimeUtils.load(docId.replace('/', ''), onFileLoaded, onFileInitialize);
+    }
   }
   function onFileInitialize(model) {
     var string = model.createString();
@@ -153,35 +177,30 @@ app.controller('CopilotCtrl', function($scope){
     myDoc = doc;
     keys = myDoc.getModel().getRoot().keys();
     //get tabMap for currently open tabs
-    tabMap = myDoc.getModel().getRoot().get('main');
+    tabMap = myDoc.getModel().getRoot().get('tabs');
     tabMap.addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, function(event){
       translateTabMap(tabMap);
     });
     //get bookmarks
-    bookmarks = myDoc.getModel().getRoot().get('main-bookmarks');
+    bookmarks = myDoc.getModel().getRoot().get('bookmarks');
     bookmarks.addEventListener(gapi.drive.realtime.EventType.VALUES_ADDED, function(event){
       translateBookmarks(bookmarks);
     });
     translateBookmarks(bookmarks);
 
     //get history
-    myHistory = myDoc.getModel().getRoot().get('main-history');
+    myHistory = myDoc.getModel().getRoot().get('history');
     $scope.history = myHistory;
     // get comments
-    myComments = myDoc.getModel().getRoot().get('main-comments');
+    myComments = myDoc.getModel().getRoot().get('comments');
     $scope.comments = myComments;
     myComments.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, function(event){
       console.log('real: updating comments');
     });
     // active
-    myActive = myDoc.getModel().getRoot().get('main-active');
-    myActive.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, function(event){
-      console.log('real: updating active');
-      updateActive();
-    });
     mapiListener(); // see the mapi.js file
     handleCollaborators();
-    testMessage();
+    $scope.$digest();
   }
 
   
@@ -223,12 +242,7 @@ app.controller('CopilotCtrl', function($scope){
       }
     });
     $scope.userIds = _.keys($scope.tabDict);
-    //remove signed out users from active
-    _.each(myActive.keys(), function(key){
-      if(!_.contains($scope.userIds, key)){
-        myActive.delete(key);
-      }
-    });
+    $scope.myActive = updateActive($scope.myActive);
     $scope.$digest();
     activateTabHover();
   }
@@ -240,6 +254,23 @@ function activateTabHover(){
     $(this).find('.tab-icons').show();
   }, function(){
     $(this).find('.tab-icons').hide();
+  });
+  $('.dodo-link').unbind('click');
+  $('.dodo-link').click(function(){
+    if(ACK){
+      msg = {
+        api:'mapi',
+        sender:'copilot_webpage',
+        recipient:'background',
+        type:'redirectLink',
+        tabId: $(this).attr('data-tabid'),
+        url: $(this).attr('data-url') 
+      }
+      window.postMessage(msg, '*');
+    }
+    else{
+      window.location.href = url;
+    }
   });
 }
 
