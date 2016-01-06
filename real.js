@@ -226,7 +226,7 @@ app.controller('CopilotCtrl', function($scope){
   function translateBookmarks(bookmarks){
     $scope.bookmarks = _.map(_.range(bookmarks.length), function(i){
       return bookmarks.get(i);
-    });
+    }).reverse();
     setTimeout(function(){
       activateTabHover();
     }, 1000);
